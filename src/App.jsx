@@ -4,15 +4,12 @@ import LoginPage from './pages/login/Login'
 
 function App() {
   return (
-    <>
-
-      <Routes>
-        <Route path='/' element={<Navigate to='/' replace />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route index element={<Navigate to='/' replace />} />
-        <Route path='*' element={<Navigate to='/' replace />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path='/' element={<Navigate to='/' replace />} />
+      <Route path='/login' element={<LoginPage />} />
+      <Route index element={<Navigate to='/' replace />} />
+      <Route path='*' element={<Navigate to='/' replace />} />
+    </Routes>
   )
 }
 
