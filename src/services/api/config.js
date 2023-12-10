@@ -1,14 +1,17 @@
 /* eslint-disable no-undef */
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import { REFRESH_TOKEN } from '@/config/const'
+import { REFRESH_TOKEN, ACCESS_TOKEN } from '@/config/const'
 import { redirect } from 'react-router-dom'
 import { checkLoginAndGetAccess } from '@/store/actions/authActions'
 
 const baseURL = import.meta.env.VITE_BASE_URL
 
 const axiosInstance = axios.create({
-  baseURL
+  baseURL,
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
 })
 
 function createAxiosResponseInterceptor() {
@@ -46,12 +49,10 @@ createAxiosResponseInterceptor()
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const { getAccessToken } = auth()
+    const access = Cookies.get(ACCESS_TOKEN)
     
-    const token = getAccessToken()
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    if (access) {
+      config.headers.Authorization = `Bearer ${access}`
     } else {
       delete axiosInstance.defaults.headers.common.Authorization
     }

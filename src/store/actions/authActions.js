@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode'
 import { setIsAuth } from '@/store/slices/authSlice'
 import { setIsLoading } from '@/store/slices/loaderSlice'
 import { setLoginErrors, setRegisterErrors } from '../slices/authSlice'
+import { setSnackbar } from '@/store/slices/snackbarSlice'
 
 export const login = createAsyncThunk('auth/login',
   async (credentials, thunkAPI) => {
@@ -39,11 +40,11 @@ export const register = createAsyncThunk('auth/register',
       await api.register(credentials)
       thunkAPI.dispatch(setIsLoading(false))
 
+      thunkAPI.dispatch(setSnackbar({ isOpen: true, message: 'User was created successfully' }))
       return 
     } catch (err) {
       thunkAPI.dispatch(setIsLoading(false))
       const errors = err.response.data
-
       thunkAPI.dispatch(setRegisterErrors(errors))
     }
   }
