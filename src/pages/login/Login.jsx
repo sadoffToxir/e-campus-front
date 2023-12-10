@@ -63,6 +63,11 @@ const LoginPage = () => {
               value={username}
               onChange={handleUsername}
             />
+            {
+              errors.login && errors.login.username_email && <Typography className='text-red-600'>
+                {errors.login.username_email.join('')}
+              </Typography>
+            }
           </FormControl>
           <FormControl variant='outlined' className='w-full'>
             <InputLabel htmlFor='password'>Password</InputLabel>
@@ -85,6 +90,12 @@ const LoginPage = () => {
                 </InputAdornment>
               }
             />
+
+            {
+              errors.login && errors.login.password && <Typography className='text-red-600'>
+                {errors.login.password.join('')}
+              </Typography>
+            }
           </FormControl>
           {
             errors.login && <Typography className='text-red-600'>

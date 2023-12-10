@@ -1,4 +1,4 @@
-import style from './Loader.module.scss' // Import the CSS file for styling
+import style from './CoreLoader.module.scss' // Import the CSS file for styling
 import PropTypes from 'prop-types'
 
 const Loader = (props) => {
