@@ -16,6 +16,4 @@ export const loaderSlice = createSlice({
 
 export const { setIsLoading } = loaderSlice.actions
 
-export const selectIsLoading = (state) => state.auth.isLoading
-
 export default loaderSlice.reducer

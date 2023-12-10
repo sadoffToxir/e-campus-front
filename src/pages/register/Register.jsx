@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react'
-import { Card, CardContent, Container, Button, Typography, IconButton, InputAdornment, OutlinedInput, FormControl, InputLabel, Snackbar, Alert } from '@mui/material'
+import { Card, CardContent, Container, Button, Typography, IconButton, InputAdornment, OutlinedInput, FormControl, InputLabel } from '@mui/material'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { removeRegisterErrors } from '@/store/slices/authSlice'
-
 import { register } from '@/store/actions/authActions'
+import BaseImageUploader from '../../components/base/BaseImageUploader/BaseImageUploader'
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const isAuth = useSelector(state => state.auth.isAuth)
   const errors = useSelector(state => state.auth.errors)
 
+  const [profileImage, setProfileImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
   const [firstName, setFistName] = useState('')
   const [lastName, setLastName] = useState('')
   const [username, setUsername] = useState('')
@@ -24,7 +26,13 @@ const LoginPage = () => {
 
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
-  const [openSnackbar, setOpenSnackbar] = useState(false)
+
+  const handleProfileImage = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImage(e.target.files[0])
+      setImagePreview(URL.createObjectURL(e.target.files[0]))
+    }
+  }
 
   const handleFirstName = (e) => {
     setFistName(e.currentTarget.value)
@@ -49,27 +57,18 @@ const LoginPage = () => {
     setPasswordConfirmation(e.currentTarget.value)
   }
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
-    }
-
-    setOpenSnackbar(false)
-  }
-
   const handleRegister = async () => {
-    await dispatch(register({
+    const credentials = {
       first_name: firstName,
       last_name: lastName,
       username: username,
       email: email,
       password: password,
       password_confirmation: passwordConfirmation
-    }))
-
-    if (!errors.register) {
-      setOpenSnackbar(true)
     }
+
+    if (profileImage) credentials.photo = profileImage
+    await dispatch(register(credentials))
   }
 
   // Showing password
@@ -97,6 +96,8 @@ const LoginPage = () => {
             <Typography variant='h4'>Register</Typography>
             <Typography>Register new account</Typography>
           </div>
+          <img src={imagePreview} />
+          <BaseImageUploader handleChange={handleProfileImage} />
           <FormControl variant='outlined' className='w-full' >
             <InputLabel htmlFor='firstName'>First Name</InputLabel>
             <OutlinedInput
@@ -205,13 +206,8 @@ const LoginPage = () => {
           <Button className='w-full' href='/login'>Log into existing account</Button>
         </CardContent>
       </Card>
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity='success' sx={{ width: '100%' }}>
-          Account was successfully created
-        </Alert>
-      </Snackbar>
     </Container >
   )
 }
 
-export default LoginPage
+export default RegisterPage
