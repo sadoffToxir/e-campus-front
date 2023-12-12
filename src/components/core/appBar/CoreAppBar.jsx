@@ -12,13 +12,15 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-
-const pages = ['Products', 'Pricing', 'Blog']
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+import appBarRouting from './appBarItems'
+import { useSelector } from 'react-redux'
 
 function ResponsiveAppBar() {
+  const isAuth = useSelector(state => state.auth.isAuth)
+
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
+  const { appBarRoutes, appBarProfileRoutes } = appBarRouting(isAuth)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -39,46 +41,27 @@ function ResponsiveAppBar() {
     <AppBar position='static'>
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          <div className=''></div>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant='h6'
-            noWrap
-            component='a'
-            href='#app-bar-with-responsive-menu'
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant='h5'
-            noWrap
-            component='a'
-            href='#app-bar-with-responsive-menu'
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <div className='flex items-center	'>
+            <AdbIcon sx={{ display: 'flex', mr: 1 }} />
+            <Typography
+              variant='h6'
+              noWrap
+              component='a'
+              href='#app-bar-with-responsive-menu'
+              sx={{
+                mr: 2,
+                display: 'flex',
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              LOGO
+            </Typography>
+          </div>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'right' }}>
             <IconButton
               size='large'
               aria-label='account of current user'
@@ -107,53 +90,60 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign='center'>{page}</Typography>
-                </MenuItem>
-              ))}
+              {appBarRoutes.map((route) => {
+                if (route.isVisible) {
+                  return <MenuItem key={route.id} onClick={handleCloseNavMenu}>
+                    <Button href={route.route}>{route.title}</Button>
+                  </MenuItem>
+                }
+              })}
             </Menu>
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'right' }}>
+            {appBarRoutes.map((route) => {
+              if (route.isVisible) {
+                return <Button
+                  key={route.id}
+                  href={route.route}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {route.title}
+                </Button>
+              }
+            })}
+          </Box>
+          {
+            isAuth && <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title='Open settings'>
+                <IconButton onClick={handleOpenUserMenu} sx={{ padding: '0 0 0 1rem' }}>
+                  <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id='menu-appbar'
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
               >
-                {page}
-              </Button>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title='Open settings'>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id='menu-appbar'
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign='center'>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+                {appBarProfileRoutes.map((route) => (
+                  <MenuItem key={route.id} onClick={handleCloseNavMenu}>
+                    <Button href={route.route}>{route.title}</Button>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          }
         </Toolbar>
       </Container>
     </AppBar>

@@ -104,7 +104,6 @@ const LoginPage = () => {
           }
           <div className='w-full'>
             <Button variant='contained' className='w-full' onClick={handleLogin}>Login</Button>
-            <Typography className='text-center text-gray-500 pt-5'>Forgot my password</Typography>
           </div>
           <Button className='w-full' href='/register'>Register New Account</Button>
         </CardContent>
