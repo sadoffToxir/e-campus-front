@@ -72,3 +72,11 @@ export const checkLoginAndGetAccess = createAsyncThunk('auth/register',
   }
 )
 
+export const logout = createAsyncThunk('auth/logout',
+  async (_, thunkAPI) => {
+    Cookies.remove(ACCESS_TOKEN)
+    Cookies.remove(REFRESH_TOKEN)
+
+    thunkAPI.dispatch(setIsAuth(false))
+  }
+)
