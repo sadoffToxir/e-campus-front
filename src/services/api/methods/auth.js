@@ -13,8 +13,13 @@ const getAccessToken = (payload) => {
   return axios.post('auth/token/refresh/', getFormDataFrobObj(payload)).then(response => response.data)
 }
 
+const getProfile = () => {
+  return axios.get('auth/profile/').then(response => response.data)
+}
+
 export default {
   login,
+  getProfile,
   register,
   getAccessToken
 }

@@ -43,7 +43,9 @@ const LoginPage = () => {
   }
 
   useEffect(() => {
-    if (isAuth) navigate('/profile')
+    if (isAuth) {
+      navigate('/profile')
+    }
   }, [isAuth])
 
   return (

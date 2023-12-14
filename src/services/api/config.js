@@ -5,7 +5,7 @@ import { REFRESH_TOKEN, ACCESS_TOKEN } from '@/config/const'
 import { redirect } from 'react-router-dom'
 import { checkLoginAndGetAccess } from '@/store/actions/authActions'
 
-const baseURL = import.meta.env.VITE_BASE_URL
+const baseURL = import.meta.env.VITE_BASE_URL + '/api'
 
 const axiosInstance = axios.create({
   baseURL,
