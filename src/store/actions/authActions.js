@@ -3,10 +3,26 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import Cookies from 'js-cookie'
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/config/const'
 import { jwtDecode } from 'jwt-decode'
-import { setIsAuth } from '@/store/slices/authSlice'
 import { setIsLoading } from '@/store/slices/loaderSlice'
-import { setLoginErrors, setRegisterErrors } from '../slices/authSlice'
-import { setSnackbar } from '@/store/slices/snackbarSlice'
+import { setLoginErrors, setRegisterErrors, setIsAuth, setProfile } from '@/store/slices/authSlice'
+import { setSuccessSnackbar } from '@/store/slices/snackbarSlice'
+
+export const getProfile = createAsyncThunk('auth/login',
+  async (credentials, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setIsLoading(true))
+      const response = await api.getProfile()
+      thunkAPI.dispatch(setIsLoading(false))
+      
+      thunkAPI.dispatch(setProfile(response))
+    } catch (err) {
+      thunkAPI.dispatch(setIsLoading(false))
+      // const errors = err.response.data
+
+      // thunkAPI.dispatch(setLoginErrors(errors))
+    }
+  }
+)
 
 export const login = createAsyncThunk('auth/login',
   async (credentials, thunkAPI) => {
@@ -40,7 +56,7 @@ export const register = createAsyncThunk('auth/register',
       await api.register(credentials)
       thunkAPI.dispatch(setIsLoading(false))
 
-      thunkAPI.dispatch(setSnackbar({ isOpen: true, message: 'User was created successfully' }))
+      thunkAPI.dispatch(setSuccessSnackbar({ isOpen: true, message: 'User was created successfully' }))
       return 
     } catch (err) {
       thunkAPI.dispatch(setIsLoading(false))
@@ -65,9 +81,12 @@ export const checkLoginAndGetAccess = createAsyncThunk('auth/register',
           
           thunkAPI.dispatch(setIsAuth(true))
         } catch (err) {
+          thunkAPI.dispatch(setIsAuth(false))
           thunkAPI.dispatch(setIsLoading(false))
         }
       }
+    } else {
+      thunkAPI.dispatch(setIsAuth(false))
     }
   }
 )

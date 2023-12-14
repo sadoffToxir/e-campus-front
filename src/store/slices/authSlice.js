@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  isAuth: false,
+  isAuth: null,
+  profile: null,
   errors: {
     login: null,
     register: null
@@ -14,6 +15,9 @@ export const authSlice = createSlice({
   reducers: {
     setIsAuth: (state, action) => {
       state.isAuth = action.payload
+    },
+    setProfile: (state, action) => {
+      state.profile = action.payload
     },
     setLoginErrors: (state, action) => {
       state.errors.login = action.payload
@@ -30,7 +34,7 @@ export const authSlice = createSlice({
   },
 })
 
-export const { setIsAuth, setLoginErrors, setRegisterErrors, removeLoginErrors, removeRegisterErrors } = authSlice.actions
+export const { setIsAuth, setLoginErrors, setRegisterErrors, removeLoginErrors, removeRegisterErrors, setProfile } = authSlice.actions
 
 export const selectIsAuth = (state) => state.auth.isAuth
 export const selectErrors = (state) => state.auth.errors

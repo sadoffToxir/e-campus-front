@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { removeRegisterErrors } from '@/store/slices/authSlice'
 import { register } from '@/store/actions/authActions'
-import BaseImageUploader from '../../components/base/BaseImageUploader/BaseImageUploader'
+import BaseImageUploader from '@/components/base/baseImageUploader/BaseImageUploader'
 
 const RegisterPage = () => {
   const dispatch = useDispatch()

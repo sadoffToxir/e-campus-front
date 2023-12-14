@@ -1,7 +1,7 @@
 import auth from './auth'
-import profile from './profile'
+import groups from './groups'
 
 export default {
   ...auth,
-  ...profile
+  ...groups
 }
