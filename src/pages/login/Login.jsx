@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { login } from '@/store/actions/authActions'
 import style from './Login.module.scss'
 import { useNavigate } from 'react-router-dom'
-import { removeLoginErrors } from '@/store/slices/authSlice'
+import { removeAuthErrors } from '@/store/slices/authSlice'
 
 const LoginPage = () => {
   const dispatch = useDispatch()
@@ -26,12 +26,12 @@ const LoginPage = () => {
   }
 
   const handleUsername = (e) => {
-    dispatch(removeLoginErrors())
+    dispatch(removeAuthErrors())
     setUsername(e.currentTarget.value)
   }
 
   const handlePassword = (e) => {
-    dispatch(removeLoginErrors())
+    dispatch(removeAuthErrors())
     setPassword(e.currentTarget.value)
   }
 
@@ -61,13 +61,13 @@ const LoginPage = () => {
             <OutlinedInput
               label='Username/Email'
               id='username'
-              error={!!errors.login}
+              error={!!errors}
               value={username}
               onChange={handleUsername}
             />
             {
-              errors.login && errors.login.username_email && <Typography className='text-red-600'>
-                {errors.login.username_email.join('')}
+              errors && errors.username_email && <Typography className='text-red-600'>
+                {errors.username_email.join('')}
               </Typography>
             }
           </FormControl>
@@ -75,7 +75,7 @@ const LoginPage = () => {
             <InputLabel htmlFor='password'>Password</InputLabel>
             <OutlinedInput
               id='password'
-              error={!!errors.login}
+              error={!!errors}
               label='Password'
               value={password}
               onChange={handlePassword}
@@ -94,14 +94,14 @@ const LoginPage = () => {
             />
 
             {
-              errors.login && errors.login.password && <Typography className='text-red-600'>
-                {errors.login.password.join('')}
+              errors && errors.password && <Typography className='text-red-600'>
+                {errors.password.join('')}
               </Typography>
             }
           </FormControl>
           {
-            errors.login && <Typography className='text-red-600'>
-              {errors.login.detail}
+            errors && <Typography className='text-red-600'>
+              {errors.detail}
             </Typography>
           }
           <div className='w-full'>

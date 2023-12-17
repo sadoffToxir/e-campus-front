@@ -1,7 +1,7 @@
 import { Button, Modal, Box, Typography } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
-import { deleteGroup } from '@/store/actions/groupsActions'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
+import { deleteComment } from '../../store/actions/commentsActions'
 
 const style = {
   position: 'absolute',
@@ -14,23 +14,19 @@ const style = {
   p: 4,
 }
 
-const DeleteGroup = ({ open, setOpen }) => {
+const DeleteComment = ({ comment, open, handleClose, topicId }) => {
   const dispatch = useDispatch()
-
-  const group = useSelector(state => state.groups.group)
-
-  const handleClose = () => setOpen(false)
 
   const handleCancel = () => {
     handleClose()
   }
 
   const handleSave = () => {
-    dispatch(deleteGroup(group.id))
+    dispatch(deleteComment({ commentId: comment.id, topicId }))
     handleClose()
   }
 
-  return <div>
+  return comment && <div>
     <Modal
       open={open}
       aria-labelledby='modal-modal-title'
@@ -38,10 +34,10 @@ const DeleteGroup = ({ open, setOpen }) => {
     >
       <Box sx={style}>
         <Typography id='modal-modal-title' variant='h6' component='h2'>
-          Delete group
+          Delete comment
         </Typography>
         <Typography id='modal-modal-description' sx={{ mt: 2 }}>
-          Do you want to delete group {group.name}
+          Do you want to delete comment {comment.text}
         </Typography>
 
         <div className='flex justify-between pt-5'>
@@ -53,9 +49,11 @@ const DeleteGroup = ({ open, setOpen }) => {
   </div>
 }
 
-DeleteGroup.propTypes = {
+DeleteComment.propTypes = {
   open: PropTypes.bool,
-  setOpen: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  topicId: PropTypes.number,
+  comment: PropTypes.object
 }
 
-export default DeleteGroup
+export default DeleteComment

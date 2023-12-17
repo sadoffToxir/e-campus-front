@@ -6,7 +6,7 @@ const initialState = {
   errors: null
 }
 
-export const authSlice = createSlice({
+export const groupsSlice = createSlice({
   name: 'groups',
   initialState,
   reducers: {
@@ -29,6 +29,6 @@ export const authSlice = createSlice({
   },
 })
 
-export const { setGroups, setGroupsErrors, setInitialGroupValues, setGroup, removeGroupsErrors } = authSlice.actions
+export const { setGroups, setGroupsErrors, setInitialGroupValues, setGroup, removeGroupsErrors } = groupsSlice.actions
 
-export default authSlice.reducer
+export default groupsSlice.reducer

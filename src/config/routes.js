@@ -3,6 +3,7 @@ import Logout from '@/pages/logout/Logout'
 import Register from '@/pages/register/Register'
 import Profile from '@/pages/profile/Profile'
 import Groups from '@/pages/groups/Groups'
+import GroupDetails from '../components/groups/GroupDetails'
 
 export const globalRoutes = [
   {
@@ -28,8 +29,14 @@ export const privateRoutes = [
     route: '/groups',
     component: Groups,
     param: {
+      id: 'groupDetails',
       paramPath: ':groupId',
-      component: Groups
+      component: GroupDetails,
+      param: {
+        id: 'groupExtraDetails',
+        paramPath: 'details',
+        component: GroupDetails // Replace with actual component
+      }
     }
   },
   {

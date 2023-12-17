@@ -1,8 +1,7 @@
-import { Button, Modal, Box, FormControl, InputLabel, OutlinedInput } from '@mui/material'
-import { useDispatch } from 'react-redux'
+import { Button, Modal, Box, Typography } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteTopic } from '@/store/actions/topicsActions'
 import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { joinGroup } from '@/store/actions/groupsActions'
 
 const style = {
   position: 'absolute',
@@ -15,23 +14,19 @@ const style = {
   p: 4,
 }
 
-const JoinGroup = ({ open, setOpen }) => {
+const DeleteTopic = ({ open, setOpen, groupId }) => {
   const dispatch = useDispatch()
 
-  const [code, setCode] = useState('')
+  const topic = useSelector(state => state.topics.topic)
 
   const handleClose = () => setOpen(false)
-
-  const handleCode = (e) => {
-    setCode(e.currentTarget.value)
-  }
 
   const handleCancel = () => {
     handleClose()
   }
 
   const handleSave = () => {
-    dispatch(joinGroup(code))
+    dispatch(deleteTopic({ topicId: topic.id, groupId }))
     handleClose()
   }
 
@@ -42,28 +37,26 @@ const JoinGroup = ({ open, setOpen }) => {
       aria-describedby='modal-modal-description'
     >
       <Box sx={style}>
-        <FormControl variant='outlined' className='w-full'>
-          <InputLabel htmlFor='code'>Code</InputLabel>
-          <OutlinedInput
-            label='Code'
-            id='code'
-            value={code}
-            onChange={handleCode}
-          />
-        </FormControl>
+        <Typography id='modal-modal-title' variant='h6' component='h2'>
+          Delete topic
+        </Typography>
+        <Typography id='modal-modal-description' sx={{ mt: 2 }}>
+          Do you want to delete topic {topic.title}
+        </Typography>
 
         <div className='flex justify-between pt-5'>
           <Button color='info' onClick={handleCancel}>Cancel</Button>
-          <Button color='success' onClick={handleSave}>Join</Button>
+          <Button color='error' onClick={handleSave}>Delete</Button>
         </div>
       </Box>
     </Modal>
   </div>
 }
 
-JoinGroup.propTypes = {
+DeleteTopic.propTypes = {
   open: PropTypes.bool,
   setOpen: PropTypes.func.isRequired,
+  groupId: PropTypes.number
 }
 
-export default JoinGroup
+export default DeleteTopic

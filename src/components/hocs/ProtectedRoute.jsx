@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, Navigate, Outlet } from 'react-router-dom'
-import { selectIsAuth } from '@/store/slices/authSlice'
 import { checkLoginAndGetAccess } from '@/store/actions/authActions'
 
 const ProtectedRoute = () => {
   const dispatch = useDispatch()
 
-  const isAuth = useSelector(selectIsAuth)
+  const isAuth = useSelector(state => state.auth.isAuth)
   const location = useLocation()
 
   if (isAuth === null) {

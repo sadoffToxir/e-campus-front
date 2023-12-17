@@ -13,12 +13,6 @@ export default (isAuth) => {
       isVisible: !isAuth
     },
     {
-      id: 'topics',
-      title: 'Topics',
-      route: '/topics',
-      isVisible: isAuth
-    },
-    {
       id: 'groups',
       title: 'Groups',
       route: '/groups',

@@ -15,14 +15,14 @@ const style = {
   p: 4,
 }
 
-const CreateGroup = ({ handleSubmit, open, setOpen, action }) => {
+const CreateTopic = ({ handleSubmit, open, setOpen, action, groupId }) => {
   const dispatch = useDispatch()
 
   const errors = useSelector(state => state.groups.errors)
-  const group = useSelector(state => state.groups.group)
+  const topic = useSelector(state => state.topics.topic)
 
-  const [name, setName] = useState(group.name)
-  const [description, setDescription] = useState(group.description)
+  const [name, setName] = useState(topic.title || '')
+  const [description, setDescription] = useState(topic.description || '')
 
   const handleClose = () => setOpen(false)
 
@@ -30,6 +30,7 @@ const CreateGroup = ({ handleSubmit, open, setOpen, action }) => {
     dispatch(removeGroupsErrors())
     setName(e.currentTarget.value)
   }
+
   const handleDescription = (e) => {
     dispatch(removeGroupsErrors())
     setDescription(e.currentTarget.value)
@@ -40,13 +41,17 @@ const CreateGroup = ({ handleSubmit, open, setOpen, action }) => {
   }
 
   const handleSave = () => {
-    handleSubmit({ name, description, id: group.id })
+    const payload = { title: name, description, group: groupId }
+    if (topic.id) {
+      payload.id = topic.id
+    }
+    handleSubmit(payload)
   }
 
   useEffect(() => {
-    setName(group.name)
-    setDescription(group.description)
-  }, [group])
+    setName(topic.title || '')
+    setDescription(topic.description || '')
+  }, [topic])
 
   return <div>
     <Modal
@@ -56,14 +61,14 @@ const CreateGroup = ({ handleSubmit, open, setOpen, action }) => {
     >
       <Box sx={style}>
         <Typography id='modal-modal-title' variant='h6' component='h2'>
-          {action[0].toUpperCase() + action.slice(1)} group
+          {action[0].toUpperCase() + action.slice(1)} topic
         </Typography>
         <Box id='modal-modal-description' sx={{ m: '20px 0' }} className='flex flex-col gap-4'>
           <FormControl variant='outlined' className='w-full'>
-            <InputLabel htmlFor='name'>Name</InputLabel>
+            <InputLabel htmlFor='topicName'>Name</InputLabel>
             <OutlinedInput
               label='Name'
-              id='name'
+              id='topicName'
               error={!!errors && !!errors.name}
               value={name}
               onChange={handleName}
@@ -75,10 +80,10 @@ const CreateGroup = ({ handleSubmit, open, setOpen, action }) => {
             }
           </FormControl>
           <FormControl variant='outlined' className='w-full'>
-            <InputLabel htmlFor='description'>Description</InputLabel>
+            <InputLabel htmlFor='topicDescription'>Description</InputLabel>
             <OutlinedInput
               label='Description'
-              id='description'
+              id='topicDescription'
               error={!!errors && !!errors.description}
               value={description}
               onChange={handleDescription}
@@ -99,11 +104,12 @@ const CreateGroup = ({ handleSubmit, open, setOpen, action }) => {
   </div>
 }
 
-CreateGroup.propTypes = {
+CreateTopic.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   open: PropTypes.bool,
   setOpen: PropTypes.func.isRequired,
-  action: PropTypes.string
+  action: PropTypes.string,
+  groupId: PropTypes.number
 }
 
-export default CreateGroup
+export default CreateTopic

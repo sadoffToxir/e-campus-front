@@ -4,7 +4,7 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { removeRegisterErrors } from '@/store/slices/authSlice'
+import { removeAuthErrors } from '@/store/slices/authSlice'
 import { register } from '@/store/actions/authActions'
 import BaseImageUploader from '@/components/base/baseImageUploader/BaseImageUploader'
 
@@ -41,19 +41,19 @@ const RegisterPage = () => {
     setLastName(e.currentTarget.value)
   }
   const handleUsername = (e) => {
-    dispatch(removeRegisterErrors())
+    dispatch(removeAuthErrors())
     setUsername(e.currentTarget.value)
   }
   const handleEmail = (e) => {
-    dispatch(removeRegisterErrors())
+    dispatch(removeAuthErrors())
     setEmail(e.currentTarget.value)
   }
   const handlePassword = (e) => {
-    dispatch(removeRegisterErrors())
+    dispatch(removeAuthErrors())
     setPassword(e.currentTarget.value)
   }
   const handlePasswordConfirmation = (e) => {
-    dispatch(removeRegisterErrors())
+    dispatch(removeAuthErrors())
     setPasswordConfirmation(e.currentTarget.value)
   }
 
@@ -121,13 +121,13 @@ const RegisterPage = () => {
             <OutlinedInput
               label='Username'
               id='username'
-              error={!!errors.register && !!errors.register.username}
+              error={!!errors && !!errors.username}
               value={username}
               onChange={handleUsername}
             />
             {
-              errors.register && errors.register.username && <Typography className='text-red-600'>
-                {errors.register.username.join('')}
+              errors && errors.username && <Typography className='text-red-600'>
+                {errors.username.join('')}
               </Typography>
             }
           </FormControl>
@@ -136,13 +136,13 @@ const RegisterPage = () => {
             <OutlinedInput
               id='email'
               label='Email'
-              error={!!errors.register && !!errors.register.email}
+              error={!!errors && !!errors.email}
               value={email}
               onChange={handleEmail}
             />
             {
-              errors.register && errors.register.email && <Typography className='text-red-600'>
-                {errors.register.email.join('')}
+              errors && errors.email && <Typography className='text-red-600'>
+                {errors.email.join('')}
               </Typography>
             }
           </FormControl>
@@ -152,7 +152,7 @@ const RegisterPage = () => {
               id='password'
               label='Password'
               value={password}
-              error={!!errors.register && !!errors.register.password}
+              error={!!errors && !!errors.password}
               onChange={handlePassword}
               type={showPassword ? 'text' : 'password'}
               endAdornment={
@@ -168,8 +168,8 @@ const RegisterPage = () => {
               }
             />
             {
-              errors.register && errors.register.password && <Typography className='text-red-600'>
-                {errors.register.password.join('')}
+              errors && errors.password && <Typography className='text-red-600'>
+                {errors.password.join('')}
               </Typography>
             }
           </FormControl>
@@ -179,7 +179,7 @@ const RegisterPage = () => {
               label='Password Confirmation'
               id='passwordConfirmation'
               value={passwordConfirmation}
-              error={!!errors.register && !!errors.register.password_confirmation}
+              error={!!errors && !!errors.password_confirmation}
               onChange={handlePasswordConfirmation}
               type={showPasswordConfirmation ? 'text' : 'password'}
               endAdornment={
@@ -195,8 +195,8 @@ const RegisterPage = () => {
               }
             />
             {
-              errors.register && errors.register.password_confirmation && <Typography className='text-red-600'>
-                {errors.register.password_confirmation.join('')}
+              errors && errors.password_confirmation && <Typography className='text-red-600'>
+                {errors.password_confirmation.join('')}
               </Typography>
             }
           </FormControl>

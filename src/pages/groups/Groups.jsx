@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getGroupsList, createNewGroup, getGroup, editGroup } from '@/store/actions/groupsActions'
-import './Groups.scss'
-import { Avatar, Typography, Button } from '@mui/material'
-import BaseUserChip from '@/components/base/baseUserChip/BaseUserChip'
+import styles from './Groups.module.scss'
+import { Typography, Button } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getImageUrl } from '@/utils/image'
-import { unixToIsoDate } from '@/utils/date'
-import BaseUserCard from '@/components/base/baseUserCard/BaseUserCard'
 import CreateGroup from '@/components/groups/CreateGroup'
 import DeleteGroup from '@/components/groups/DeleteGroup'
 import JoinGroup from '@/components/groups/JoinGroup'
@@ -15,6 +11,9 @@ import { setInitialGroupValues } from '@/store/slices/groupsSLice'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
+import GroupDetails from '../../components/groups/GroupDetails'
+import Topics from '../../components/topics/Topics'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const Groups = () => {
   const dispatch = useDispatch()
@@ -29,9 +28,10 @@ const Groups = () => {
   const [openJoinModal, setOpenJoinModal] = useState(false)
 
   const [activeGroup, setActiveGroup] = useState(null)
-  const [showUserCard, setShowUserCard] = useState(false)
+  const [isDetails, setIsDetails] = useState(false)
 
   const handleActiveGroup = (group) => {
+    setIsDetails(false)
     navigate(`/groups/${group.id}`)
   }
 
@@ -58,6 +58,13 @@ const Groups = () => {
     dispatch(editGroup(data))
   }
 
+  const handleOpenDetails = () => {
+    setIsDetails(true)
+  }
+
+  const handleCloseDetails = () => {
+    setIsDetails(false)
+  }
   const groupsElementsList = groups ? groups.map((group) => {
     const backgroundColor = activeGroup && activeGroup.id === group.id ? 'bg-slate-300' : 'bg-slate-200'
 
@@ -90,7 +97,7 @@ const Groups = () => {
   }, [location, groups])
 
   return <div className='flex h-full bg-white'>
-    <div className='w-[30%] text-center text-lg itemsListColumn flex flex-col'>
+    <div className={`w-[30%] text-center text-lg ${styles.itemsListColumn} flex flex-col`}>
       <CreateGroup handleSubmit={handleEditGroup} open={openEditModal} setOpen={setOpenEditModal} action='edit' />
       <CreateGroup handleSubmit={handleCreateGroup} open={openCreateModal} setOpen={setOpenCreateModal} action='create' />
       <DeleteGroup open={openDeleteModal} setOpen={setOpenDeleteModal} />
@@ -112,55 +119,16 @@ const Groups = () => {
       </div>
     </div>
     <div className='grow flex flex-col'>
-      <Typography variant='h5' className='py-4 text-center h-16'>
-        {activeGroup && activeGroup.name}
+      <Typography variant='h5' className='py-4 text-center h-16 flex'>
+        {
+          activeGroup && isDetails && <Button className='px-4' onClick={handleCloseDetails}><ArrowBackIcon /></Button>
+        }
+        <span className='grow' onClick={handleOpenDetails}>{activeGroup && activeGroup.name}</span>
       </Typography>
       <div className='bg-slate-300 h-max grow'>
         <div className='mx-3 my-2 bg-white px-5 py-3'>
           {
-            activeGroup && <>
-              <div className='flex flex-col flex-wrap gap-2'>
-                <Typography className='flex justify-between' variant='h6' sx={{ backgroundColor: '#E8E8E8', padding: '4px 10px' }}>
-                  <span>Name:</span> <span>{activeGroup.name}</span>
-                </Typography>
-                <Typography className='flex justify-between' variant='h6' sx={{ backgroundColor: '#E8E8E8', padding: '4px 10px' }}>
-                  <span>Creation date:</span> <span>{unixToIsoDate(activeGroup.created_at)}</span>
-                </Typography>
-                <Typography className='flex justify-between' variant='h6' sx={{ backgroundColor: '#E8E8E8', padding: '4px 10px' }}>
-                  <span>Description:</span> <span>{activeGroup.description}</span>
-                </Typography>
-                <Typography className='flex justify-between' variant='h6' sx={{ backgroundColor: '#E8E8E8', padding: '4px 10px' }}>
-                  <span>Join Code:</span> <span>{activeGroup.join_code}</span>
-                </Typography>
-                <Typography className='flex justify-between items-center' variant='h6' sx={{ backgroundColor: '#E8E8E8', padding: '4px 10px' }}>
-                  <span>Owner:</span>
-                  <span>
-                    {showUserCard && <div className='relative'>
-                      <div className='absolute right-0 w-[345px] top-[45px]'>
-                        <BaseUserCard user={activeGroup.owner} />
-                      </div>
-                    </div>}
-
-                    <Avatar
-                      onMouseEnter={() => setShowUserCard(true)}
-                      src={getImageUrl(activeGroup.owner.photo)}
-                      onMouseLeave={() => setShowUserCard(false)}
-                    /></span>
-                </Typography>
-              </div>
-              <div>
-                <Typography variant='h5' sx={{ margin: '20px 0 10px' }}>
-                  Members:
-                </Typography>
-                <div className='flex gap-3'>
-                  {
-                    activeGroup.members.map(member => {
-                      return <div key={member.id}><BaseUserChip user={member} /></div>
-                    })
-                  }
-                </div>
-              </div>
-            </>
+            activeGroup ? isDetails ? <GroupDetails group={activeGroup} /> : <Topics groupId={activeGroup.id} /> : null
           }
         </div>
       </div>
