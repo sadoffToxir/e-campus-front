@@ -32,16 +32,31 @@ function App() {
     return <Route path={route.route} Component={route.component} key={route.id} />
   })
 
-  const privateRouteElements = privateRoutes.map((route) => {
-    if (route.param) {
-      return <Route path={route.route} Component={route.component} key={route.id}>
-        <Route exact path={route.param.paramPath} Component={route.param.component} />
-        <Route path={route.route} Component={route.component} />
-      </Route>
-    } else {
-      return <Route path={route.route} Component={route.component} key={route.id} />
-    }
-  })
+  const renderRoutes = (routes) => {
+    return routes.map(route => {
+      if (route.param) {
+        // Render a route with a nested route
+        return (
+          <Route key={route.id} path={route.route} element={<route.component />}>
+            {/* Define the nested route */}
+            <Route path={route.param.paramPath} element={<route.param.component />} />
+
+            {/* Additional nesting if needed */}
+            {route.param.param && (
+              <Route path={route.param.param.paramPath} element={<route.param.param.component />} />
+            )}
+          </Route>
+        )
+      } else {
+        // Render a simple route
+        return (
+          <Route key={route.id} path={route.route} element={<route.component />} />
+        )
+      }
+    })
+  }
+
+  const privateRouteElements = renderRoutes(privateRoutes)
 
   useEffect(() => {
     dispatch(checkLoginAndGetAccess())
@@ -64,14 +79,13 @@ function App() {
       <div className='grow'>
         <Routes>
           {globalRouteElements}
-
           <Route element={<ProtectedRoute />}>
             {privateRouteElements}
           </Route>
-
-          <Route index element={<Navigate to='/profile' replace />} />
-          <Route path='*' element={<Navigate to='/profile' replace />} />
+          {/* <Route index element={<Navigate to='/profile' replace />} />
+          <Route path='*' element={<Navigate to='/profile' replace />} /> */}
         </Routes>
+
       </div>
     </div>
   )

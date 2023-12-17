@@ -17,9 +17,14 @@ const getProfile = () => {
   return axios.get('auth/profile/').then(response => response.data)
 }
 
+const updateProfile = (payload) => {
+  return axios.put('auth/profile/', getFormDataFrobObj(payload)).then(response => response.data)
+}
+
 export default {
   login,
   getProfile,
+  updateProfile,
   register,
   getAccessToken
 }

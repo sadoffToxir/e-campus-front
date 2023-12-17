@@ -4,11 +4,11 @@ import Cookies from 'js-cookie'
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/config/const'
 import { jwtDecode } from 'jwt-decode'
 import { setIsLoading } from '@/store/slices/loaderSlice'
-import { setLoginErrors, setRegisterErrors, setIsAuth, setProfile } from '@/store/slices/authSlice'
+import { setAuthErrors, setIsAuth, setProfile } from '@/store/slices/authSlice'
 import { setSuccessSnackbar } from '@/store/slices/snackbarSlice'
 
-export const getProfile = createAsyncThunk('auth/login',
-  async (credentials, thunkAPI) => {
+export const getProfile = createAsyncThunk('auth/getProfile',
+  async (_, thunkAPI) => {
     try {
       thunkAPI.dispatch(setIsLoading(true))
       const response = await api.getProfile()
@@ -17,9 +17,22 @@ export const getProfile = createAsyncThunk('auth/login',
       thunkAPI.dispatch(setProfile(response))
     } catch (err) {
       thunkAPI.dispatch(setIsLoading(false))
-      // const errors = err.response.data
+    }
+  }
+)
+export const updateProfile = createAsyncThunk('auth/updateProfile',
+  async (payload, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setIsLoading(true))
+      const response = await api.updateProfile(payload)
+      thunkAPI.dispatch(setIsLoading(false))
+      
+      thunkAPI.dispatch(setProfile(response))
+    } catch (err) {
+      thunkAPI.dispatch(setIsLoading(false))
 
-      // thunkAPI.dispatch(setLoginErrors(errors))
+      const errors = err.response.data
+      thunkAPI.dispatch(setAuthErrors(errors))
     }
   }
 )
@@ -44,7 +57,7 @@ export const login = createAsyncThunk('auth/login',
       thunkAPI.dispatch(setIsLoading(false))
       const errors = err.response.data
 
-      thunkAPI.dispatch(setLoginErrors(errors))
+      thunkAPI.dispatch(setAuthErrors(errors))
     }
   }
 )
@@ -61,7 +74,7 @@ export const register = createAsyncThunk('auth/register',
     } catch (err) {
       thunkAPI.dispatch(setIsLoading(false))
       const errors = err.response.data
-      thunkAPI.dispatch(setRegisterErrors(errors))
+      thunkAPI.dispatch(setAuthErrors(errors))
     }
   }
 )
